@@ -341,7 +341,7 @@ Supports all modern browsers including:
 
 **GitHub**
 
-https://github.com/AyushiSingh411
+https://github.com/Ayushisingh411
 
 **LinkedIn**
 
