@@ -248,25 +248,25 @@ Play Again
 
 ## 🎮 Gameplay
 
-![Gameplay](screenshots/game-arena.png)
+![Gameplay](screenshots/game arena.png)
 
 ---
 
 ## 🤖 AI Gameplay
 
-![AI Gameplay](screenshots/game-arena-ai.png)
+![AI Gameplay](screenshots/game arena(2).png)
 
 ---
 
 ## 👤 Profiles & Themes
 
-![Profiles & Themes](screenshots/profiles-themes.png)
+![Profiles & Themes](screenshots/profiles and themes.png)
 
 ---
 
 ## 🏆 Victory Screen
 
-![Victory Screen](screenshots/victory-screen.png)
+![Victory Screen](screenshots/victory page.png)
 # 🎲 How to Play
 
 1. Launch the game.
