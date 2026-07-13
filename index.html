@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GRID NEXUS | Ultimate Tic-Tac-Toe</title>
+  <!-- Futuristic Typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800;900&family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="theme-cyber-neon">
+  <!-- Interactive Canvas Background for Particles and Glows -->
+  <canvas id="bg-canvas"></canvas>
+
+  <!-- Game Logo Symbol Definitions for Inline SVG Reusability -->
+  <svg style="display: none;">
+    <defs>
+      <!-- Game Avatar Icons -->
+      <g id="avatar-cyber-punk">
+        <circle cx="50" cy="50" r="45" fill="none" stroke="currentColor" stroke-width="3"/>
+        <path d="M25 70 C30 50, 70 50, 75 70" fill="none" stroke="currentColor" stroke-width="4"/>
+        <circle cx="38" cy="40" r="4" fill="currentColor"/>
+        <circle cx="62" cy="40" r="4" fill="currentColor"/>
+        <path d="M38 36 L62 36" stroke="currentColor" stroke-width="2"/>
+        <path d="M45 48 H55" stroke="currentColor" stroke-width="2"/>
+        <path d="M15 45 L20 55 H80 L85 45" stroke="currentColor" stroke-width="2" fill="none"/>
+      </g>
+      <g id="avatar-galaxy-mage">
+        <circle cx="50" cy="50" r="45" fill="none" stroke="currentColor" stroke-width="3"/>
+        <polygon points="50,15 35,45 65,45" fill="none" stroke="currentColor" stroke-width="3"/>
+        <circle cx="50" cy="32" r="3" fill="currentColor"/>
+        <path d="M30 75 Q50 55 70 75" stroke="currentColor" stroke-width="4" fill="none"/>
+        <polygon points="50,5 53,12 60,15 53,18 50,25 47,18 40,15 47,12" fill="currentColor"/>
+      </g>
+      <g id="avatar-pixel-bot">
+        <rect x="15" y="15" width="70" height="70" rx="10" fill="none" stroke="currentColor" stroke-width="4"/>
+        <rect x="28" y="32" width="12" height="12" fill="currentColor"/>
+        <rect x="60" y="32" width="12" height="12" fill="currentColor"/>
+        <path d="M30 60 H70 V68 H30 Z" fill="currentColor"/>
+        <rect x="45" y="5" width="10" height="10" fill="currentColor"/>
+      </g>
+      <g id="avatar-lava-beast">
+        <circle cx="50" cy="50" r="45" fill="none" stroke="currentColor" stroke-width="3"/>
+        <path d="M20 30 L35 45 L50 25 L65 45 L80 30" fill="none" stroke="currentColor" stroke-width="4"/>
+        <polygon points="35,55 50,75 65,55" fill="currentColor"/>
+        <circle cx="35" cy="48" r="5" fill="currentColor"/>
+        <circle cx="65" cy="48" r="5" fill="currentColor"/>
+      </g>
+      <!-- Trophies -->
+      <g id="icon-trophy">
+        <path d="M30 20 H70 V45 C70 56 61 65 50 65 C39 65 30 56 30 45 Z" fill="none" stroke="currentColor" stroke-width="4"/>
+        <path d="M50 65 V80 M35 80 H65" stroke="currentColor" stroke-width="4" stroke-linecap="round"/>
+        <path d="M30 28 H20 V40 C20 45 25 48 30 48 M70 28 H80 V40 C80 45 75 48 70 48" fill="none" stroke="currentColor" stroke-width="4"/>
+      </g>
+    </defs>
+  </svg>
+
+  <!-- 1. SPLASH SCREEN -->
+  <section id="screen-splash" class="game-screen screen-active">
+    <div class="splash-content">
+      <div class="splash-logo-container">
+        <div class="logo-glow"></div>
+        <svg class="splash-logo" viewBox="0 0 200 200">
+          <polygon points="100,20 180,65 180,155 100,195 20,155 20,65" fill="none" stroke="var(--primary-glow)" stroke-width="5" class="hex-pulse"/>
+          <path d="M60,65 L100,105 L140,65" fill="none" stroke="var(--accent-glow)" stroke-width="8" stroke-linecap="round"/>
+          <path d="M60,135 L100,95 L140,135" fill="none" stroke="var(--accent-glow)" stroke-width="8" stroke-linecap="round"/>
+          <line x1="100" y1="20" x2="100" y2="195" stroke="var(--primary-glow)" stroke-width="2" stroke-dasharray="8 8"/>
+        </svg>
+      </div>
+      <h1 class="splash-title">GRID NEXUS</h1>
+      <p class="splash-subtitle">ULTIMATE NEON COMBAT</p>
+      
+      <div class="loader-container">
+        <div class="loader-bar"><div class="loader-fill" id="splash-loader"></div></div>
+        <p class="loader-text" id="loader-status">INITIALIZING SYSTEM ARCHITECTURE...</p>
+      </div>
+
+      <button id="btn-splash-launch" class="btn btn-primary btn-large btn-glow hidden">
+        <span>PRESS START</span>
+      </button>
+    </div>
+  </section>
+
+  <!-- 2. MAIN MENU SCREEN -->
+  <section id="screen-main-menu" class="game-screen">
+    <!-- Top Header Profile Banner -->
+    <header class="menu-header">
+      <div class="player-profile-widget" id="header-profile-widget">
+        <div class="avatar-ring" id="header-avatar-container">
+          <!-- Dynamically Injected Avatar -->
+          <svg viewBox="0 0 100 100" class="avatar-svg"><use href="#avatar-cyber-punk"></use></svg>
+        </div>
+        <div class="profile-meta">
+          <div class="profile-row">
+            <span class="player-name" id="header-username">PLAYER1</span>
+            <span class="player-level" id="header-level">LV. 1</span>
+          </div>
+          <div class="xp-bar-container">
+            <div class="xp-bar-fill" id="header-xp-fill" style="width: 0%"></div>
+            <span class="xp-text" id="header-xp-text">0 / 100 XP</span>
+          </div>
+        </div>
+      </div>
+      
+      <div class="menu-currency-widgets">
+        <div class="currency-widget" title="Trophy Count">
+          <svg class="currency-icon" viewBox="0 0 100 100"><use href="#icon-trophy"></use></svg>
+          <span class="currency-val" id="header-trophies">0</span>
+        </div>
+        <div class="currency-widget highlight" title="Win Streak">
+          <span class="streak-fire">🔥</span>
+          <span class="currency-val" id="header-streak">0</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Menu Core Contents -->
+    <div class="menu-body">
+      <!-- Left side Banner: Achievements / Challenges -->
+      <aside class="menu-side-left">
+        <!-- Daily Challenge Card -->
+        <div class="glass-card challenge-card">
+          <div class="card-header">
+            <span class="card-tag">DAILY CHALLENGE</span>
+            <span class="timer-countdown" id="challenge-timer">18:42:05</span>
+          </div>
+          <h3 class="challenge-title" id="daily-challenge-title">Win 3 matches vs Medium AI</h3>
+          <div class="challenge-progress-bar">
+            <div class="challenge-progress-fill" id="daily-challenge-progress" style="width: 0%"></div>
+          </div>
+          <div class="challenge-row">
+            <span class="challenge-prog-text" id="daily-challenge-text">0 / 3</span>
+            <span class="challenge-reward">+100 XP | 🏆 1</span>
+          </div>
+        </div>
+
+        <!-- Mini Stats Summary -->
+        <div class="glass-card mini-stats-card">
+          <h4>COMBAT OVERVIEW</h4>
+          <div class="stat-grid">
+            <div class="mini-stat">
+              <span class="stat-label">VICTORIES</span>
+              <span class="stat-value" id="stats-total-wins">0</span>
+            </div>
+            <div class="mini-stat">
+              <span class="stat-label">WIN RATE</span>
+              <span class="stat-value" id="stats-win-rate">0%</span>
+            </div>
+            <div class="mini-stat">
+              <span class="stat-label">MAX STREAK</span>
+              <span class="stat-value" id="stats-max-streak">0</span>
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Center Logo & Main Action Button -->
+      <main class="menu-center">
+        <div class="menu-logo-area">
+          <h1 class="logo-title" data-text="GRID NEXUS">GRID NEXUS</h1>
+          <p class="logo-sub">TIC-TAC-TOE ECLIPSE</p>
+        </div>
+
+        <div class="menu-actions">
+          <button id="btn-menu-play" class="btn btn-action-play btn-glow-pulse">
+            <div class="btn-interior">
+              <span class="play-icon">▶</span>
+              <span class="play-label">ENTER ARENA</span>
+            </div>
+          </button>
+          
+          <div class="menu-grid-buttons">
+            <button id="btn-menu-profile" class="btn btn-secondary">
+              <span class="btn-icon">👤</span> PROFILE & THEMES
+            </button>
+            <button id="btn-menu-achievements" class="btn btn-secondary">
+              <span class="btn-icon">🏅</span> ACHIEVEMENTS
+            </button>
+            <button id="btn-menu-log" class="btn btn-secondary">
+              <span class="btn-icon">📜</span> COMBAT LOG
+            </button>
+            <button id="btn-menu-settings" class="btn btn-secondary">
+              <span class="btn-icon">⚙️</span> SETTINGS
+            </button>
+          </div>
+        </div>
+      </main>
+
+      <!-- Right side: Custom Dev panel / Seasonal Vibe / Mascots -->
+      <aside class="menu-side-right">
+        <!-- Floating Mascot Widget -->
+        <div class="glass-card mascot-card" id="mascot-widget">
+          <div class="mascot-avatar" id="mascot-anim-container">
+            <!-- Canvas/SVG mascot animated -->
+            <svg viewBox="0 0 100 100" class="mascot-svg">
+              <circle cx="50" cy="50" r="30" fill="none" stroke="var(--primary-glow)" stroke-width="4"/>
+              <path d="M40 45 A5 5 0 0 0 50 45 M50 45 A5 5 0 0 0 60 45" stroke="var(--primary-glow)" stroke-width="4" stroke-linecap="round" fill="none" id="mascot-eyes"/>
+              <path d="M42 60 Q50 68 58 60" stroke="var(--accent-glow)" stroke-width="3" fill="none" stroke-linecap="round" id="mascot-mouth"/>
+              <!-- Antennas -->
+              <line x1="50" y1="20" x2="50" y2="8" stroke="var(--primary-glow)" stroke-width="3"/>
+              <circle cx="50" cy="8" r="4" fill="var(--accent-glow)"/>
+            </svg>
+          </div>
+          <div class="mascot-bubble">
+            <p id="mascot-text">Greetings Commander! Ready for battle?</p>
+          </div>
+        </div>
+
+        <!-- Quick Settings Shortcuts -->
+        <div class="glass-card quick-settings-card">
+          <h4>THEME CORE</h4>
+          <div class="quick-themes-grid">
+            <button class="theme-dot cyber" data-theme="cyber-neon" title="Cyber Neon"></button>
+            <button class="theme-dot galaxy" data-theme="galaxy" title="Galaxy"></button>
+            <button class="theme-dot arcade" data-theme="arcade" title="Arcade"></button>
+            <button class="theme-dot space" data-theme="space-arena" title="Space Arena"></button>
+            <button class="theme-dot crystal" data-theme="crystal" title="Crystal"></button>
+            <button class="theme-dot volcano" data-theme="volcano" title="Volcano"></button>
+            <button class="theme-dot ocean" data-theme="ocean" title="Ocean"></button>
+            <button class="theme-dot gold" data-theme="royal-gold" title="Royal Gold"></button>
+          </div>
+        </div>
+      </aside>
+    </div>
+
+    <!-- Easter Egg Vibe -->
+    <div class="secret-easter-egg" id="secret-trigger">
+      <span class="egg-hint">🛸 SECURE CHIP CONNECTED</span>
+    </div>
+  </section>
+
+  <!-- 3. GAME SETUP MODAL / OVERLAY -->
+  <section id="screen-game-setup" class="game-screen screen-overlay">
+    <div class="modal-card">
+      <button class="btn-close-modal" id="btn-setup-back">×</button>
+      <h2 class="modal-title">CHOOSE GAME MODE</h2>
+      
+      <div class="setup-modes">
+        <!-- AI Game Mode -->
+        <button class="setup-mode-option selected" id="opt-mode-ai">
+          <div class="mode-icon">🎮</div>
+          <div class="mode-info">
+            <h3>PLAY VS SYSTEM AI</h3>
+            <p>Challenge the Grid Core algorithms. Earn XP & achievements.</p>
+          </div>
+        </button>
+
+        <!-- Local PvP Mode -->
+        <button class="setup-mode-option" id="opt-mode-pvp">
+          <div class="mode-icon">👥</div>
+          <div class="mode-info">
+            <h3>LOCAL MULTIPLAYER</h3>
+            <p>Pass & Play mode to battle your friends side-by-side.</p>
+          </div>
+        </button>
+      </div>
+
+      <!-- Difficulty Section (Toggled dynamically when AI selected) -->
+      <div id="difficulty-selection-area">
+        <h2 class="modal-title secondary-title">SELECT SECURITY LEVEL</h2>
+        <div class="setup-difficulties">
+          <button class="difficulty-btn easy" data-diff="easy">
+            <span class="diff-level">EASY</span>
+            <span class="diff-xp">50% AI Power</span>
+          </button>
+          <button class="difficulty-btn medium selected" data-diff="medium">
+            <span class="diff-level">MEDIUM</span>
+            <span class="diff-xp">75% AI Power</span>
+          </button>
+          <button class="difficulty-btn hard" data-diff="hard">
+            <span class="diff-level">HARD</span>
+            <span class="diff-xp">95% AI Power</span>
+          </button>
+          <button class="difficulty-btn impossible" data-diff="impossible">
+            <span class="diff-level">IMPOSSIBLE</span>
+            <span class="diff-xp">100% AI Power</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Start Combat Button -->
+      <button id="btn-setup-start" class="btn btn-primary btn-glow btn-large">
+        <span>INITIALIZE MATCH</span>
+      </button>
+    </div>
+  </section>
+
+  <!-- 4. THE GAME ARENA -->
+  <section id="screen-game-arena" class="game-screen">
+    <!-- Match Info Header (VS Display) -->
+    <header class="arena-header">
+      <!-- Player 1 Info -->
+      <div class="arena-profile p1-glow active" id="arena-p1-card">
+        <div class="avatar-ring" id="arena-p1-avatar-container">
+          <svg viewBox="0 0 100 100" class="avatar-svg"><use href="#avatar-cyber-punk"></use></svg>
+        </div>
+        <div class="arena-meta">
+          <span class="p-name" id="arena-p1-name">PLAYER 1</span>
+          <span class="p-symbol sym-x">X</span>
+        </div>
+      </div>
+
+      <div class="vs-glow-divider">
+        <span class="vs-glow-text">VS</span>
+      </div>
+
+      <!-- Player 2 / AI Info -->
+      <div class="arena-profile p2-glow" id="arena-p2-card">
+        <div class="arena-meta align-right">
+          <span class="p-name" id="arena-p2-name">SYSTEM AI</span>
+          <span class="p-symbol sym-o">O</span>
+        </div>
+        <div class="avatar-ring" id="arena-p2-avatar-container">
+          <svg viewBox="0 0 100 100" class="avatar-svg"><use href="#avatar-galaxy-mage"></use></svg>
+        </div>
+      </div>
+    </header>
+
+    <!-- Turn Banner & Status Announcement -->
+    <div class="turn-announcement" id="turn-display">
+      <span class="turn-label">CURRENT TURN:</span>
+      <span class="turn-value" id="turn-player-name">PLAYER 1</span>
+    </div>
+
+    <!-- The 3x3 Grid Board Container -->
+    <div class="board-container">
+      <div class="board-frame-glow"></div>
+      <div class="board-grid" id="game-board">
+        <!-- Cells Injected Programmatically (9 cells) -->
+        <button class="grid-cell" data-idx="0"></button>
+        <button class="grid-cell" data-idx="1"></button>
+        <button class="grid-cell" data-idx="2"></button>
+        <button class="grid-cell" data-idx="3"></button>
+        <button class="grid-cell" data-idx="4"></button>
+        <button class="grid-cell" data-idx="5"></button>
+        <button class="grid-cell" data-idx="6"></button>
+        <button class="grid-cell" data-idx="7"></button>
+        <button class="grid-cell" data-idx="8"></button>
+      </div>
+
+      <!-- AI Thinking Cover -->
+      <div class="board-thinking-overlay hidden" id="ai-thinking-overlay">
+        <div class="radar-scan"></div>
+        <div class="thinking-spinner"></div>
+        <span class="thinking-label">AI CALCULATING MINIMAX PATHWAYS...</span>
+      </div>
+    </div>
+
+    <!-- Arena Action controls -->
+    <footer class="arena-footer">
+      <button class="btn btn-secondary" id="btn-arena-quit">
+        <span>🏳️ QUIT</span>
+      </button>
+      <button class="btn btn-secondary" id="btn-arena-restart">
+        <span>🔄 RESET BOARD</span>
+      </button>
+    </footer>
+  </section>
+
+  <!-- 5. VICTORY / DEFEAT / MATCH-OVER SCREEN (CINEMATIC OVERLAY) -->
+  <section id="screen-game-over" class="game-screen screen-overlay">
+    <div class="cinematic-overlay-bg" id="game-over-background"></div>
+    <div class="cinematic-container">
+      <!-- Title banner (VICTORY / DEFEAT / COMBAT DRAW) -->
+      <div class="result-banner" id="match-result-banner">
+        <h1 class="result-title animate-glow" id="match-result-title">VICTORY</h1>
+        <p class="result-desc" id="match-result-subtitle">SYSTEM SECURITY BREACHED</p>
+      </div>
+
+      <!-- Center Rewards & Metrics Card -->
+      <div class="glass-card reward-modal-card">
+        <div class="reward-main-row">
+          <!-- Medal/Trophy Presentation -->
+          <div class="reward-graphic-container" id="reward-graphic">
+            <!-- Injected programmatically (e.g. golden trophy, shattered shield, balance scale) -->
+          </div>
+          
+          <div class="reward-details">
+            <div class="streak-tracker-widget" id="game-over-streak-card">
+              <span class="fire-icon">🔥</span>
+              <span class="streak-count" id="game-over-streak-text">3 Match Streak!</span>
+            </div>
+
+            <!-- XP Progression Ticker -->
+            <div class="xp-gain-card">
+              <span class="gain-badge" id="xp-earned-badge">+50 XP</span>
+              <div class="xp-bar-container large">
+                <div class="xp-bar-fill animated" id="game-over-xp-fill" style="width: 0%"></div>
+                <span class="xp-text" id="game-over-xp-text">Lvl 1 | 0 / 100 XP</span>
+              </div>
+              <div class="level-up-burst hidden" id="game-over-level-up-badge">LEVEL UP!</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Custom Unlocks Carousel / Reward Message -->
+        <div class="unlock-rewards-feed hidden" id="game-over-unlocks">
+          <div class="feed-badge">🔓 UNLOCKED</div>
+          <span class="unlock-name" id="game-over-unlock-text">VOLCANO THEME</span>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="cinematic-actions">
+        <button id="btn-over-retry" class="btn btn-action-play btn-glow-pulse btn-large">
+          <span>REPLAY MATCH</span>
+        </button>
+        <button id="btn-over-menu" class="btn btn-secondary btn-large">
+          <span>RETURN TO BASE</span>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6. PROFILE & CUSTOMIZATION MENU -->
+  <section id="screen-profile" class="game-screen screen-overlay">
+    <div class="modal-card wide-card">
+      <button class="btn-close-modal" id="btn-profile-back">×</button>
+      <h2 class="modal-title">PROFILE CONTROL CENTER</h2>
+
+      <div class="profile-tabs-content">
+        <!-- Left Side: Customizer Configuration -->
+        <div class="profile-custom-left">
+          <!-- Identity editing -->
+          <div class="glass-card sub-card">
+            <h4>IDENTIFICATION CODE</h4>
+            <div class="username-edit-row">
+              <input type="text" id="input-username" maxlength="14" placeholder="ENTER USERNAME..." value="PLAYER1">
+              <button class="btn btn-primary" id="btn-save-username">SAVE</button>
+            </div>
+          </div>
+
+          <!-- Select Avatar -->
+          <div class="glass-card sub-card">
+            <h4>AVATAR SELECTION</h4>
+            <div class="avatar-select-grid" id="avatar-grid">
+              <!-- Dynamically populated avatar frames -->
+            </div>
+          </div>
+
+          <!-- Profile Borders -->
+          <div class="glass-card sub-card">
+            <h4>PROFILE ENHANCEMENT BORDERS</h4>
+            <div class="borders-select-grid" id="borders-grid">
+              <!-- Dynamically populated borders frames -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Side: Stats & Theme Swappers & Trophy Cases -->
+        <div class="profile-custom-right">
+          <!-- Theme Swapping -->
+          <div class="glass-card sub-card">
+            <h4>GRID VISUAL ENGINE (THEME)</h4>
+            <div class="themes-selector-list" id="themes-list-grid">
+              <!-- Swappable themes list buttons -->
+            </div>
+          </div>
+
+          <!-- Trophy Shelf -->
+          <div class="glass-card sub-card">
+            <h4>ACQUIRED METALS & TROPHIES</h4>
+            <div class="trophy-shelf" id="trophy-shelf-grid">
+              <!-- 3D or glowing trophies display -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7. ACHIEVEMENTS SYSTEM -->
+  <section id="screen-achievements" class="game-screen screen-overlay">
+    <div class="modal-card wide-card">
+      <button class="btn-close-modal" id="btn-achievements-back">×</button>
+      <h2 class="modal-title">ACHIEVEMENTS ARCHIVE</h2>
+      
+      <div class="achievements-scroll-area" id="achievements-container">
+        <!-- Injected achievements cards -->
+      </div>
+    </div>
+  </section>
+
+  <!-- 8. COMBAT LOG / BATTLE HISTORY -->
+  <section id="screen-log" class="game-screen screen-overlay">
+    <div class="modal-card wide-card">
+      <button class="btn-close-modal" id="btn-log-back">×</button>
+      <h2 class="modal-title">NEXUS COMBAT RETROSPECTIVE</h2>
+      
+      <div class="log-scroll-area">
+        <table class="battle-log-table">
+          <thead>
+            <tr>
+              <th>MODE</th>
+              <th>SECURITY LEVEL</th>
+              <th>OUTCOME</th>
+              <th>THEME</th>
+              <th>DATE TIMESTAMP</th>
+            </tr>
+          </thead>
+          <tbody id="battle-log-tbody">
+            <!-- Dynamically loaded log lines -->
+          </tbody>
+        </table>
+        <div class="empty-log-msg hidden" id="empty-log-warning">
+          📡 NO COMBAT FILES STORED IN MEMORY BANKS
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 9. SETTINGS DRAWER -->
+  <section id="screen-settings" class="game-screen screen-overlay">
+    <div class="modal-card">
+      <button class="btn-close-modal" id="btn-settings-back">×</button>
+      <h2 class="modal-title">SYSTEM SETTINGS</h2>
+
+      <div class="settings-content">
+        <!-- SFX Volume -->
+        <div class="settings-group">
+          <label for="slider-sfx">COMBAT SOUND EFFECTS (SFX)</label>
+          <div class="slider-control">
+            <span class="vol-lbl">🔈</span>
+            <input type="range" id="slider-sfx" min="0" max="100" value="70">
+            <span class="vol-lbl">🔊</span>
+            <span class="vol-val" id="val-sfx">70%</span>
+          </div>
+        </div>
+
+        <!-- Ambient volume -->
+        <div class="settings-group">
+          <label for="slider-music">AMBIENT SYNTH CORE (MUSIC)</label>
+          <div class="slider-control">
+            <span class="vol-lbl">🔈</span>
+            <input type="range" id="slider-music" min="0" max="100" value="40">
+            <span class="vol-lbl">🔊</span>
+            <span class="vol-val" id="val-music">40%</span>
+          </div>
+        </div>
+
+        <div class="settings-group dev-tools">
+          <label>NEXUS DEVELOPER UTILITIES</label>
+          <div class="dev-btns-row">
+            <button class="btn btn-secondary" id="btn-dev-max-out">🚀 MAX OUT PROGRESS</button>
+            <button class="btn btn-danger" id="btn-dev-reset">⚠️ RESET EVERYTHING</button>
+          </div>
+        </div>
+
+        <div class="settings-info-footer">
+          <p>GRID NEXUS v1.4.2 // GEMINI DEEPMIND PROJECT</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <script src="app.js"></script>
+</body>
+</html>
