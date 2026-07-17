@@ -10,7 +10,7 @@ Grid Nexus transforms the classic Tic-Tac-Toe experience into a modern browser g
 
 🔗 **Live Website:** https://ayushisingh411.github.io/SCT_WD_3/
 
-🔗 **GitHub Repository:** https://github.com/AyushiSingh411/SCT_WD_3
+🔗 **GitHub Repository:** https://github.com/Ayushisingh411/SCT_WD_3
 
 ---
 
